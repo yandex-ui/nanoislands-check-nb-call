@@ -51,3 +51,8 @@ nb-island({
  * `nb-island` и свойство `content`
  * `nb-checkbox` и свойство `text`
 
+## Запуск
+
+```sh
+$ node ./check.js my-templates.yate
+```
