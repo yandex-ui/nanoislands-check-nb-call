@@ -1,0 +1,7 @@
+external xml func()
+
+match / {
+    nb-checkbox({
+        'content': func()
+    })
+}

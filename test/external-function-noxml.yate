@@ -1,0 +1,7 @@
+external scalar func()
+
+match / {
+    nb-checkbox({
+        'content': func()
+    })
+}

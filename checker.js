@@ -107,6 +107,22 @@ exports.check = function(input) {
 
                     var someVal = prop.p.Value.p.Value;
                     if (someVal.p.Name) {
+                        /*
+                        nb-checkbox({
+                            'content': some-var
+                        })
+                        */
+                        errors.push({
+                            error: 'INVALID_TYPE',
+                            propName: propName,
+                            propType: propType,
+                            varName: someVal.p.Name,
+                            where: {
+                                line: prop.where.y + 1,
+                                column: prop.where.x,
+                                filename: prop.where.input.filename
+                            }
+                        });
                         value = 'var ' + someVal.p.Name;
 
                     } else {
