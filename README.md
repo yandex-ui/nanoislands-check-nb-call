@@ -1,6 +1,8 @@
 nanoislands-check-nb-call
 =========================
 
+[![Build Status](https://travis-ci.org/yandex-ui/nanoislands-check-nb-call.png?branch=master)](https://travis-ci.org/yandex-ui/nanoislands-check-nb-call)
+
 Прототип защиты от XSS в nanoislands.
 
 Проблема состоит в том, что часто надо прокидывать html-разметку в вызовы `nb-*`. Но это черевато XSS.
