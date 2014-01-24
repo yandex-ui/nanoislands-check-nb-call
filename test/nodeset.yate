@@ -1,0 +1,5 @@
+match / {
+    nb-checkbox({
+        'content': .xss-data
+    })
+}
