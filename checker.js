@@ -106,7 +106,41 @@ exports.check = function(input) {
                     checkResult = ' ** ACHTUNG! **';
 
                     var someVal = prop.p.Value.p.Value;
+
+                    /*
+                    str = '<text>'
+
+                    nb-checkbox({
+                        'content': str
+                    })
+                     */
                     if (someVal.p.Name) {
+                        // пытаемся найти значение переменной, игнорируя внешние функции
+                        if (propType === 'scalar' && !someVal.f.IsExternal) {
+                            var varId = someVal.p.Id;
+                            var parent = someVal;
+                            var found = false;
+                            // защита от бесконечного цикла
+                            var c = 100;
+                            while (c-- && parent && !found) {
+                                parent.defs && parent.defs.forEach(function(def) {
+                                    if (def.p.Id === varId) {
+                                        checkScalarValue(def, errors, propName, propType);
+                                        found = true;
+                                    }
+                                });
+                                parent = someVal.scope.parent
+                            }
+
+                            if (c < 1) {
+                                throw 'INFINITE LOOP! File a bug to GitHub please.'
+                            }
+
+                            if (found) {
+                                return;
+                            }
+                        }
+
                         /*
                         nb-checkbox({
                             'content': some-var
@@ -123,7 +157,6 @@ exports.check = function(input) {
                                 filename: prop.where.input.filename
                             }
                         });
-                        value = 'var ' + someVal.p.Name;
 
                     } else {
 
@@ -146,35 +179,36 @@ exports.check = function(input) {
                             });
 
                         } else {
-                            value = prop.p.Value.p.Value.p.Value.p.Items.map(function(item) {
-                                if (item.p.Value) {
-                                    if (/<[a-z]|<\/[a-z]/i.test(item.p.Value)) {
-                                        errors.push({
-                                            error: 'STRING_HAS_TAGS',
-                                            propName: propName,
-                                            propType: propType,
-                                            propValue: item.p.Value,
-                                            where: {
-                                                line: prop.where.y + 1,
-                                                column: prop.where.x,
-                                                filename: prop.where.input.filename
-                                            }
-                                        });
-                                        checkResult2 = ' ** HAS TAGS!!! **';
-                                    }
-
-                                    return JSON.stringify(item.p.Value);
-
-                                } else {
-                                    return 'some_expr';
-                                }
-                            }).join(' + ');
+                            checkScalarValue(prop, errors, propName, propType);
                         }
                     }
                 }
             }
 
             console.log('    ', propName, ':', propType, checkResult, value, checkResult2);
+        });
+    }
+
+    function checkScalarValue(prop, errors, propName, propType) {
+        prop.p.Value.p.Value.p.Value.p.Items.forEach(function(item) {
+            if (item.p.Value) {
+                if (/<|>/i.test(item.p.Value)) {
+                    errors.push({
+                        error: 'STRING_HAS_TAGS',
+                        propName: propName,
+                        propType: propType,
+                        propValue: item.p.Value,
+                        where: {
+                            line: prop.where.y + 1,
+                            column: prop.where.x,
+                            filename: prop.where.input.filename
+                        }
+                    });
+                }
+
+            } else {
+                return 'some_expr';
+            }
         });
     }
 

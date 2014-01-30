@@ -16,7 +16,7 @@ describe('external-function', function() {
             this.result = this.check(this.name);
         });
 
-        it('should throw error if content is nodeset', function() {
+        it('should return error', function() {
             expect(this.result).to.have.length(1);
         });
 

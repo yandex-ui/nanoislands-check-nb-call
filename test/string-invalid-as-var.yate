@@ -1,0 +1,8 @@
+match / {
+
+    str = '<text>'
+
+    nb-checkbox({
+        'content': str
+    })
+}
