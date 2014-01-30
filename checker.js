@@ -122,18 +122,23 @@ exports.check = function(input) {
                             var found = false;
                             // защита от бесконечного цикла
                             var c = 100;
+
+                            var checkDefs = function(def) {
+                                if (def.p.Id === varId) {
+                                    checkScalarValue(def, errors, propName, propType);
+                                    found = true;
+                                }
+                            };
+
                             while (c-- && parent && !found) {
-                                parent.defs && parent.defs.forEach(function(def) {
-                                    if (def.p.Id === varId) {
-                                        checkScalarValue(def, errors, propName, propType);
-                                        found = true;
-                                    }
-                                });
-                                parent = someVal.scope.parent
+                                if (parent.defs) {
+                                    parent.defs.forEach(checkDefs);
+                                }
+                                parent = someVal.scope.parent;
                             }
 
                             if (c < 1) {
-                                throw 'INFINITE LOOP! File a bug to GitHub please.'
+                                throw 'INFINITE LOOP! File a bug to GitHub please.';
                             }
 
                             if (found) {
