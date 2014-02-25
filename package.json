@@ -22,6 +22,7 @@
   "homepage": "https://github.com/yandex-ui/nanoislands-check-nb-call",
 
   "dependencies": {
+    "colors": "0.6.2",
     "nanoislands": "0.1.34",
     "yate": "0.0.66"
   },

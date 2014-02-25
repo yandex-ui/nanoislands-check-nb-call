@@ -1,5 +1,5 @@
 match / {
-    nb-checkbox({
+    nb-button({
         'content': '<text>'
     })
 }

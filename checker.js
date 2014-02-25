@@ -3,6 +3,7 @@
  */
 
 var yate = require('yate');
+var Errors = require('./lib/errors');
 
 const EXCLUDE_FUNCTIONS = [
     'nb-block',
@@ -15,7 +16,7 @@ const EXCLUDE_FUNCTIONS = [
 
 exports.check = function(input) {
 
-    var errors = [];
+    var errors = new Errors();
 
     var res = yate.compile(input);
     var root = res.ast.p.Block;
@@ -36,19 +37,6 @@ exports.check = function(input) {
         findNbIslandCall(tmplDecl);
     });
 
-    function printWhere(funcCall) {
-        return funcCall.where.input.filename + ' ' + (funcCall.where.y + 1) + ':' + funcCall.where.x;
-    }
-
-    function printCall(funcCall, arg) {
-        if (arg.p.Expr) {
-            arg = arg.p.Expr;
-            return funcCall.p.Name + '( ' + arg.p.Name + ':' + arg.p.AsType + ' )';
-        } else {
-            return funcCall.p.Name + '( :' + arg.p.AsType + ' )';
-        }
-    }
-
     function findNbIslandCall(decl) {
         // у функций, которые возвращаеют статический контент, Body нет
         if (!decl.p.Body) {
@@ -60,8 +48,7 @@ exports.check = function(input) {
         // пробежимся по всем выражениям
         body.p.Exprs.p.Items.forEach(function(funcExpr) {
             // нам надо выражение, у которого Id == Id nb-функции
-            var funcIdx;
-            if (funcExpr.p.Value && (funcIdx = funcIDS.indexOf(funcExpr.p.Value.p.Id)) > - 1) {
+            if (funcExpr.p.Value && funcIDS.indexOf(funcExpr.p.Value.p.Id) > - 1) {
                 var funcCall = funcExpr.p.Value;
                 var funcCallArg = funcCall.p.Args.p.Items[0].p.Expr;
 
@@ -69,8 +56,6 @@ exports.check = function(input) {
                 if (/node_modules\/nanoislands\/blocks\/.*?\/.*?.yate$/.test(funcCall.where.input.filename)) {
                     return;
                 }
-
-                console.log(' call', printCall(funcCall, funcCallArg), printWhere(funcCall));
 
                 // инлайн-объект
                 if (funcCallArg.p.Block) {
@@ -82,7 +67,6 @@ exports.check = function(input) {
 
                     body.p.Defs.p.Items.forEach(function(decl) {
                         if (decl.p.Id == varId) {
-                            console.log('  ', decl.p.Name, 'is', decl.p.Value.__type);
                             checkObject(decl.p.Value);
                         }
                     });
@@ -97,13 +81,8 @@ exports.check = function(input) {
             var propType = prop.p.Value.__type;
             var propName = prop.p.Key.p.Value.p.Items[0].p.Value;
 
-            var checkResult = '';
-            var checkResult2 = '';
-            var value = '';
             if (propName.toLowerCase().indexOf('content') > -1) {
-                checkResult = ' ** OK';
                 if (propType != 'xml') {
-                    checkResult = ' ** ACHTUNG! **';
 
                     var someVal = prop.p.Value.p.Value;
 
@@ -151,17 +130,19 @@ exports.check = function(input) {
                             'content': some-var
                         })
                         */
-                        errors.push({
-                            error: 'INVALID_TYPE',
-                            propName: propName,
-                            propType: propType,
-                            varName: someVal.p.Name,
-                            where: {
-                                line: prop.where.y + 1,
+                        errors.add(
+                            Errors.TYPE.INVALID_VAR_TYPE,
+                            {
+                                propName: propName,
+                                propType: propType,
+                                varName: someVal.p.Name
+                            },
+                            {
+                                line: prop.where.y,
                                 column: prop.where.x,
                                 filename: prop.where.input.filename
                             }
-                        });
+                        );
 
                     } else {
 
@@ -171,17 +152,18 @@ exports.check = function(input) {
                                 'content': .xss-data
                             })
                             */
-                            value = '';
-                            errors.push({
-                                error: 'INVALID_TYPE',
-                                propName: propName,
-                                propType: propType,
-                                where: {
-                                    line: prop.where.y + 1,
+                            errors.add(
+                                Errors.TYPE.INVALID_TYPE,
+                                {
+                                    propName: propName,
+                                    propType: propType
+                                },
+                                {
+                                    line: prop.where.y,
                                     column: prop.where.x,
                                     filename: prop.where.input.filename
                                 }
-                            });
+                            );
 
                         } else {
                             checkScalarValue(prop, errors, propName, propType);
@@ -189,8 +171,6 @@ exports.check = function(input) {
                     }
                 }
             }
-
-            console.log('    ', propName, ':', propType, checkResult, value, checkResult2);
         });
     }
 
@@ -198,21 +178,34 @@ exports.check = function(input) {
         prop.p.Value.p.Value.p.Value.p.Items.forEach(function(item) {
             if (item.p.Value) {
                 if (/<|>/i.test(item.p.Value)) {
-                    errors.push({
-                        error: 'STRING_HAS_TAGS',
-                        propName: propName,
-                        propType: propType,
-                        propValue: item.p.Value,
-                        where: {
-                            line: prop.where.y + 1,
+                    errors.add(
+                        Errors.TYPE.STRING_HAS_TAGS,
+                        {
+                            propName: propName,
+                            propType: propType,
+                            propValue: item.p.Value
+                        },
+                        {
+                            line: prop.where.y,
                             column: prop.where.x,
                             filename: prop.where.input.filename
                         }
-                    });
+                    );
                 }
 
             } else {
-                return 'some_expr';
+                errors.add(
+                    Errors.TYPE.UNKNOWN,
+                    {
+                        propName: propName,
+                        propType: propType
+                    },
+                    {
+                        line: prop.where.y,
+                        column: prop.where.x,
+                        filename: prop.where.input.filename
+                    }
+                );
             }
         });
     }
@@ -236,10 +229,4 @@ exports.check = function(input) {
     }
 
     return errors;
-};
-
-exports.printErrors = function(errors) {
-    errors.forEach(function(error) {
-        console.log('...', error);
-    });
 };
