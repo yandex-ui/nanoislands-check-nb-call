@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 require('coa').Cmd()
     .name(process.argv[1])
     .title('Dummy checks to prevent XSS in nanoislands yate templates.')

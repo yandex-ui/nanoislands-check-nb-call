@@ -14,7 +14,7 @@ before(function() {
         return name;
     };
 
-    this.check = require('../checker.js').check;
+    this.check = require('../lib/checker.js').check;
 
 });
 
