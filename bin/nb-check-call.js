@@ -30,7 +30,7 @@ require('coa').Cmd()
         .long('import')
         .end()
     .act(function(opts) {
-        var checker = require('../checker');
+        var checker = require('../lib/checker');
 
         var result = checker.check(
             opts['input'],
