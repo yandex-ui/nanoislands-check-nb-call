@@ -2,5 +2,5 @@
 
 var checker = require('../checker');
 
-var errors = checker.check(process.argv[2]);
-errors.explainErrors();
+var result = checker.check(process.argv[2]);
+result.errors.explainErrors();

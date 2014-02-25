@@ -228,5 +228,8 @@ exports.check = function(input) {
         return nbFuncs;
     }
 
-    return errors;
+    return {
+        errors: errors,
+        compiled: res
+    };
 };
