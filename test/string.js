@@ -123,4 +123,38 @@ describe('scalar', function() {
 
     });
 
+    describe('scalar with unknown value', function() {
+
+        before(function() {
+            this.name = this.compile('scalar-as-param.yate');
+            this.result = this.check(this.name).errors;
+        });
+
+        it('should return error', function() {
+            expect(this.result.getErrorCount()).to.be.equal(1);
+        });
+
+        it('should return error with "error" key', function() {
+            expect(this.result.getErrorList()[0]).to.have.property('type', TYPE.INVALID_VAR_TYPE);
+        });
+
+        it('should return error with "propName" key', function() {
+            expect(this.result.getErrorList()[0].error).to.have.property('propName', 'content');
+        });
+
+        it('should return error with "propType" key', function() {
+            expect(this.result.getErrorList()[0].error).to.have.property('propType', 'scalar');
+        });
+
+        it('should return error with "propValue" key', function() {
+            expect(this.result.getErrorList()[0].error).to.have.property('varName', 'label-text');
+        });
+
+        it('should return error with "where" key', function() {
+            expect(this.result.getErrorList()[0]).to.have.property('where').that.is.a('object');
+        });
+
+
+    });
+
 });

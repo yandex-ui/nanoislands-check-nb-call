@@ -1,0 +1,12 @@
+match / {
+    apply . my-mode ('123')
+}
+
+match / my-mode (label-text = '') {
+    nb-checkbox({
+        'size': 's'
+        'type': 'checkbox'
+        'name': 'my-name'
+        'content': label-text
+    })
+}
