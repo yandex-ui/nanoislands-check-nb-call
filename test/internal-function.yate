@@ -1,0 +1,9 @@
+func returnXML() {
+    <div>1</div>
+}
+
+match / {
+    nb-checkbox({
+        'content': returnXML()
+    })
+}

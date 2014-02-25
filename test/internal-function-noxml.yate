@@ -1,0 +1,9 @@
+func returnScalar() {
+    "1"
+}
+
+match / {
+    nb-checkbox({
+        'content': returnScalar()
+    })
+}
