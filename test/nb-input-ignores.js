@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var TYPE = require('../lib/errors').TYPE;
 
-describe.only('nb-input-ignores', function() {
+describe('nb-input-ignores', function() {
 
     it('should ignore nb-input "content" prop', function() {
         var name = this.compile('nb-input-ignores-content.yate');
