@@ -14,9 +14,21 @@ const EXCLUDE_FUNCTIONS = [
     'nb-wrap'
 ];
 
-exports.check = function(input) {
+exports.check = function(input, importModule, opts) {
 
     var errors = new Errors();
+
+    yate.modules = {};
+    if (importModule) {
+        var obj = JSON.parse( require('fs').readFileSync(importModule, 'utf-8') );
+        yate.modules[ obj.name ] = obj;
+    }
+
+    if (opts['ast']) {
+        yate.cliOptions['write-ast'] = true;
+        // use yate parse to write AST
+        yate.parse(input);
+    }
 
     var res = yate.compile(input);
     var root = res.ast.p.Block;

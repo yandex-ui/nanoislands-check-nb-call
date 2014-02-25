@@ -1,3 +1,4 @@
+*.ast
 coverage
 .idea
 node_modules
