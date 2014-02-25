@@ -154,7 +154,6 @@ describe('scalar', function() {
             expect(this.result.getErrorList()[0]).to.have.property('where').that.is.a('object');
         });
 
-
     });
 
 });

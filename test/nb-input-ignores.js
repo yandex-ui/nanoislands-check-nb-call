@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-var TYPE = require('../lib/errors').TYPE;
 
 describe('nb-input-ignores', function() {
 
