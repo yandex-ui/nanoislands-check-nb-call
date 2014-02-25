@@ -1,0 +1,12 @@
+match / {
+
+    str-with-condition = if .foo {
+        "Подтвердить"
+    } else {
+        "Выбрать"
+    }
+
+    nb-checkbox({
+        'content': str-with-condition
+    })
+}

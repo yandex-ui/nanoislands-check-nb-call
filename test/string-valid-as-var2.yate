@@ -1,0 +1,12 @@
+match / {
+
+    xmlstr-with-condition = if .foo {
+        <b>b</b>
+    } else {
+        <i>i</i>
+    }
+
+    nb-checkbox({
+        'content': xmlstr-with-condition
+    })
+}

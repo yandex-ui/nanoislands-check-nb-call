@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var TYPE = require('../lib/errors').TYPE;
 
-describe.only('internal-function', function() {
+describe('internal-function', function() {
 
     it('should not return errors if function has xml type', function() {
         var name = this.compile('internal-function.yate');
