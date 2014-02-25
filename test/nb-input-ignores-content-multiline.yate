@@ -1,0 +1,6 @@
+match / {
+    nb-input({
+        'type': 'multiline'
+        'content': "<tag>"
+    })
+}
