@@ -1,10 +1,10 @@
 {
   "name": "nanoislands-check-call",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Dummy checks to prevent XSS in nanoislands yate templates",
   "main": "lib/checker.js",
   "scripts": {
-    "test": "jshint . && jscs . && mocha"
+    "test": "npm install nanoislands yate && jshint . && jscs . && mocha"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,9 @@
   "peerDependencies": {
       "nanoislands": "*",
       "yate": "*"
+  },
+  "bin": {
+    "nanoislands-check-call": "./bin/nb-check-call.js"
   },
   "files": [
     "bin",
