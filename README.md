@@ -2,6 +2,9 @@ nanoislands-check-nb-call
 =========================
 
 [![Build Status](https://travis-ci.org/yandex-ui/nanoislands-check-nb-call.png?branch=master)](https://travis-ci.org/yandex-ui/nanoislands-check-nb-call)
+[![NPM version](https://badge.fury.io/js/nanoislands-check-call.png)](http://badge.fury.io/js/nanoislands-check-call)
+[![Dependency Status](https://david-dm.org/yandex-ui/nanoislands-check-nb-call.png)](https://david-dm.org/yandex-ui/nanoislands-check-nb-call)
+
 
 Прототип защиты от XSS в nanoislands.
 
