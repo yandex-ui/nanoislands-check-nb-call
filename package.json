@@ -23,7 +23,8 @@
 
   "dependencies": {
     "coa": "0.4.0",
-    "colors": "0.6.2"
+    "colors": "0.6.2",
+    "yate": "*"
   },
   "devDependencies": {
     "chai": "1.8.x",
@@ -33,8 +34,7 @@
     "mocha": "1.17.x"
   },
   "peerDependencies": {
-      "nanoislands": "*",
-      "yate": "*"
+      "nanoislands": "*"
   },
   "bin": {
     "nanoislands-check-call": "./bin/nb-check-call.js"
