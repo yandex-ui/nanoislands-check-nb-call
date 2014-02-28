@@ -10,6 +10,13 @@ describe('scalar', function() {
         expect(res.errors.isEmpty()).to.be.equal(true);
     });
 
+    it('should not return errors if content is empty string', function() {
+        var name = this.compile('string-valid-empty.yate');
+        var res = this.check(name);
+
+        expect(res.errors.isEmpty()).to.be.equal(true);
+    });
+
     it('should not return errors if content is variable and variable is valid string', function() {
         var name = this.compile('string-valid-as-var.yate');
         var res = this.check(name);
