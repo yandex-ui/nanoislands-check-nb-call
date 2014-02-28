@@ -1,6 +1,6 @@
 {
   "name": "nanoislands-check-call",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Dummy checks to prevent XSS in nanoislands yate templates",
   "main": "lib/checker.js",
   "scripts": {
